@@ -1,0 +1,2 @@
+evo_traj bag 2022-07-02-01-00-22.bag /tf:map.base_link /odom --ref=/odom -p --plot_mode=xy
+evo_traj bag 2022-07-02-01-00-22.bag /tf:map.base_link /odom --save_as_kitti

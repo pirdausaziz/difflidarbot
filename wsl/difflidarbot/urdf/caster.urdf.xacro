@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+
+	<!-- Caster Dimensions -->
+    <xacro:property name="caster_wheel_length" value="0.01163" />
+    <xacro:property name="caster_wheel_radius" value="0.01224" />
+    <xacro:property name="caster_base_length" value="0.001" />
+    <xacro:property name="caster_base_radius" value="0.004555" />
+	<xacro:property name="caster_base_joint_x" value="0" />
+    <xacro:property name="caster_base_joint_z" value="0" />
+    <xacro:property name="caster_base_link_z" value="-0.05615" />
+    <xacro:property name="M_PI" value="3.14" />
+
+	<xacro:property name="wheel_kp" value="600000" />
+    <xacro:property name="wheel_kd" value="3" />
+    <xacro:property name="wheel_mu1" value="10000000" />
+    <xacro:property name="wheel_mu2" value="10000000" />
+
+	<xacro:macro name="caster" params="caster_prefix parent_link *joint_pose">
+		<!-- Caster Wheel Link -->
+		<link name="${caster_prefix}_caster_link">
+		
+    <inertial>
+      <origin
+        xyz="-1.38777878078145E-17 8.76035355368288E-17 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.00563231136965005" />
+      <inertia
+        ixx="3.23418393118784E-07"
+        ixy="3.65661418016849E-09"
+        ixz="-1.57577223364526E-23"
+        iyy="5.74788995552012E-07"
+        iyz="-1.98644591203129E-21"
+        izz="3.23365212679329E-07" />
+    </inertial>
+		
+			<visual>
+			
+				<xacro:if value="$(arg mesh_enabled)">
+					<origin
+					  xyz="0 0 0" rpy="0 0 0" />
+					<geometry>
+						<mesh filename="package://difflidarbot/meshes/${caster_prefix}_caster_wheel.STL" />
+					</geometry>
+				</xacro:if>
+				
+				<xacro:unless value="$(arg mesh_enabled)">
+					<origin xyz="0 0 0" rpy="${M_PI/2} 0 0" />
+					<geometry>
+						<cylinder length="${caster_wheel_length/2}" radius="${caster_wheel_radius}" />
+					</geometry>
+				</xacro:unless>
+				
+				<material name="Blue"/>
+			
+			</visual>
+
+			<!--collision>
+				<origin xyz="0 0 0" rpy="${M_PI/2} 0 0" />
+				<geometry>
+					<cylinder length="${caster_wheel_length/2}" radius="${caster_wheel_radius}" />
+				</geometry>
+				<material name="Blue"/>
+			</collision-->
+			
+			<collision>
+				<origin
+					xyz="0 0 0"
+					rpy="0 0 0" />
+				<geometry>
+					<mesh
+					  filename="package://difflidarbot/meshes/${caster_prefix}_caster_wheel.STL" />
+				</geometry>
+			</collision>
+		</link>
+
+		<!-- Caster Base Link -->
+		<link name="${caster_prefix}_caster_base">
+		
+    <inertial>
+      <origin
+        xyz="-0.00448850794852911 0.000149901457637872 -0.00968047155100937"
+        rpy="0 0 0" />
+      <mass
+        value="0.001767172170941" />
+      <inertia
+        ixx="8.78900008183846E-08"
+        ixy="-1.12542070635438E-10"
+        ixz="-9.61661842867818E-09"
+        iyy="8.03579193921896E-08"
+        iyz="1.36784047595661E-10"
+        izz="9.26288314358772E-08" />
+    </inertial>
+			
+			<visual>
+			
+				<xacro:if value="$(arg mesh_enabled)">
+					<origin
+						xyz="0 0 0"
+						rpy="0 0 0" />
+					<geometry>
+					  <mesh filename="package://difflidarbot/meshes/${caster_prefix}_caster_base.STL" />
+					</geometry>
+				</xacro:if>
+				
+				<xacro:unless value="$(arg mesh_enabled)">
+					<origin xyz="0 0 ${-caster_base_length/2}" rpy="0 0 0" />
+					<geometry>
+						<cylinder length="${caster_base_length}" radius="${caster_base_radius}" />
+					</geometry>
+				</xacro:unless>
+			</visual>
+					
+			<!--collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<cylinder length="${caster_base_length}" radius="${caster_base_radius}" />
+				</geometry>
+			</collision>-->
+			
+			<collision>
+				<origin
+					xyz="0 0 0"
+					rpy="0 0 0" />
+				<geometry>
+					<mesh
+					  filename="package://difflidarbot/meshes/${caster_prefix}_caster_base.STL" />
+				</geometry>
+			</collision>
+
+		</link>
+
+		<!-- Caster Base Link and Wheel Link Joint -->
+		<joint name="${caster_prefix}_cwheel" type="continuous">
+			<parent link="${caster_prefix}_caster_base"/>
+			<child link="${caster_prefix}_caster_link"/>
+    <origin
+      xyz="-0.0104182158452964 0.000151518664455497 -0.022873360204248"
+      rpy="0 0 0" />
+    <axis
+      xyz="0 -1 0" />
+		</joint>
+
+		<!-- Caster base and parent joint -->
+		<joint name="${caster_prefix}_caster" type="continuous">
+			<parent link="${parent_link}"/>
+			<child link="${caster_prefix}_caster_base"/>
+			<xacro:insert_block name="joint_pose"/>
+    <axis
+      xyz="0 0 -1" />
+		</joint>
+
+	</xacro:macro>
+	
+</robot>

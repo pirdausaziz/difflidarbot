@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<robot  xmlns:xacro="http://ros.org/wiki/xacro"
+        name="difflidarbot" >        
+
+    <xacro:include filename="$(find difflidarbot)/urdf/caster.urdf.xacro" />
+    <xacro:include filename="$(find difflidarbot)/urdf/wheel.urdf.xacro" />
+    <xacro:include filename="$(find difflidarbot)/urdf/materials.urdf.xacro" />
+    <xacro:include filename="$(find difflidarbot)/urdf/difflidarbot.gazebo.xacro" />
+	
+    <xacro:arg name="mesh_enabled" default="true" />
+    <xacro:arg name="robot_namespace" default="/"/>
+    <xacro:arg name="botname" default=""/>
+	
+    <link   name =  "base_footprint"/>
+
+    <link   name = "base_link">
+    <inertial>
+      <origin
+        xyz="-0.0239707214467182 0.000504760596907988 0.0534613565294754"
+        rpy="0 0 0" />
+      <mass
+        value="2.06426285784522" />
+      <inertia
+        ixx="0.0208727044569018"
+        ixy="-1.63273104069268E-05"
+        ixz="-2.76908548590674E-10"
+        iyy="0.023784285658067"
+        iyz="-1.79813734565039E-08"
+        izz="0.0437345754000742" />
+    </inertial>
+		
+		<visual>
+		  <origin
+			xyz="0 0 0"
+			rpy="0 0 0" />
+		  <geometry>
+			<mesh
+			  filename="package://difflidarbot/meshes/base_link.STL" />
+		  </geometry>
+		  <material name="DarkGrey" />
+		</visual>
+		
+		<collision>
+			<origin
+				xyz="0 0 0"
+				rpy="0 0 0" />
+			<geometry>
+			<mesh filename="package://difflidarbot/meshes/base_link.STL" />
+			</geometry>
+			<material name="DarkGrey" />
+		</collision>
+	
+    </link>
+	
+    <joint name = "base_joint"  type = "fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0.0 0.0 0.05305" rpy="0 0 0" />
+        <axis xyz="0 1 0" rpy="0 0 0" />
+    </joint>
+	
+	<link	name="base_scan">
+    <inertial>
+      <origin
+        xyz="0.00083499216952812 2.77877841996649E-05 -0.0165538422721794"
+        rpy="0 0 0" />
+      <mass
+        value="0.162441348075653" />
+      <inertia
+        ixx="7.45180172109881E-05"
+        ixy="1.9767749172107E-08"
+        ixz="4.83741945263861E-07"
+        iyy="7.39254523433583E-05"
+        iyz="1.61173090085499E-08"
+        izz="0.000105565753033107" />
+    </inertial>
+		<visual>
+			<origin
+				xyz="0 0 0"
+				rpy="0 0 0" />
+			<geometry>
+			<mesh
+				filename="package://difflidarbot/meshes/lidar.STL" />
+			</geometry>
+			<material name="Black" />
+		</visual>
+		<collision>
+			<origin
+				xyz="0 0 0"
+				rpy="0 0 0" />
+			<geometry>
+				<mesh filename="package://difflidarbot/meshes/lidar.STL" />
+		  </geometry>
+		</collision>
+	</link>
+	
+	<joint name="scan_joint" type="fixed">
+		<origin
+			xyz="0.017139 0.00021705 0.13355"
+			rpy="0 0 0" />
+		<parent
+		  link="base_link" />
+		<child
+		  link="base_scan" />
+		<axis
+		  xyz="0 0 0" />
+	</joint>
+	
+	<!--link name="imu_link"/>
+	
+	<joint name="imu_joint" type="fixed">
+		<parent link="base_link"/>
+		<child link="imu_link"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+	</joint-->
+
+  <link
+    name="imu_link">
+    <inertial>
+      <origin
+        xyz="-0.00153952953427407 -0.00101955092400335 -0.00010537065585281"
+        rpy="0 0 0" />
+      <mass
+        value="0.000529368897619893" />
+      <inertia
+        ixx="1.33291986132662E-08"
+        ixy="-6.24680721546872E-14"
+        ixz="-5.60525253440556E-12"
+        iyy="1.99747899401287E-08"
+        iyz="1.93834054606256E-18"
+        izz="7.56085395944572E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://difflidarbot/meshes/imu.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://difflidarbot/meshes/imu.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="imu_joint"
+    type="fixed">
+    <origin
+      xyz="-0.101498719390972 0 0.00876299999999997"
+      rpy="1.5707963267949 0 1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="imu_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+	<!--caster defination-->
+    <xacro:caster caster_prefix="right" parent_link="base_link" >
+    <origin
+      xyz="0.11025499492819 -0.100173578496859 -0.00634591015875316"
+      rpy="0 0 0" />
+    </xacro:caster>
+	
+	<xacro:caster caster_prefix="left" parent_link="base_link" >
+    <origin
+      xyz="0.11025499492819 0.0998264215031362 -0.00634591015875452"
+      rpy="0 0 0" />
+    </xacro:caster>
+	
+	<!--wheel defination-->
+	<xacro:wheel wheel_prefix="right" parent_link="base_link" >
+    <origin
+      xyz="-0.0920548053555096 -0.223443578496857 0.0190700000000028"
+      rpy="0 0 0" />
+    </xacro:wheel>
+
+    <xacro:wheel wheel_prefix="left" parent_link="base_link" >
+    <origin
+      xyz="-0.0920548053555117 0.223096421503134 0.0190699999999972"
+      rpy="0 0 0" />
+    </xacro:wheel>
+
+</robot>

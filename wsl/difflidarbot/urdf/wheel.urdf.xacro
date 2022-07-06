@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro" >
+
+<xacro:macro name="wheel" params="wheel_prefix parent_link *joint_pose">
+
+		<!-- Wheel Link -->
+		<link name="${wheel_prefix}_wheel_link">
+    <inertial>
+      <origin
+        xyz="2.09333106404586E-10 -0.00152473725038332 1.05400796424071E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.19611351357196" />
+      <inertia
+        ixx="0.00024859815585616"
+        ixy="-4.33993186483824E-13"
+        ixz="2.00773903511573E-12"
+        iyy="0.000480450846970988"
+        iyz="-2.18810412096022E-12"
+        izz="0.000248598165586253" />
+    </inertial>
+
+			<visual>
+				<origin
+					xyz="0 0 0"
+					rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://difflidarbot/meshes/${wheel_prefix}_wheel.STL" />
+				</geometry>
+				<material name="Blue"/>
+			</visual>
+			<collision>
+				<origin
+					xyz="0 0 0"
+					rpy="0 0 0" />
+					<geometry>
+					<mesh
+						filename="package://difflidarbot/meshes/${wheel_prefix}_wheel.STL" />
+					</geometry>
+				<material name="Blue"/>
+			</collision>
+			
+		</link>
+
+		<!-- Wheel Joint -->
+		<joint name="${wheel_prefix}_wheel" type="continuous">
+			<parent link="${parent_link}"/>
+			<child link="${wheel_prefix}_wheel_link"/>
+			<xacro:insert_block name="joint_pose"/>
+    <axis
+      xyz="0 1 0" />
+    </joint>
+
+</xacro:macro>
+
+</robot>
